@@ -32,7 +32,7 @@
 
 - For pusher install: composer require pusher/pusher-php-server "~3.0"
 
-- Modify the env file with following credentials.
+- Modify the env file with following credentials:
 BROADCAST_DRIVER=pusher
 
 PUSHER_APP_ID=anyid
@@ -45,7 +45,7 @@ PUSHER_APP_CLUSTER=mt1
 
 
 
-- Modify the config/broadcasting.php,  replace the following credentials in pusher part.
+- Modify the config/broadcasting.php,  replace the following credentials in pusher part:
 
  'pusher' => 
         [
@@ -69,7 +69,7 @@ PUSHER_APP_CLUSTER=mt1
 
 - Install laravel echo, follow the process: https://laravel.com/docs/11.x/broadcasting#client-side-installation
 
-- After that modify bootstrap.js, replace the following credentials in laravel-echo and pusher-js part.
+- After that modify bootstrap.js, replace the following credentials in laravel-echo and pusher-js part:
 
 import jQuery from 'jquery';
 window.$ = jQuery;
