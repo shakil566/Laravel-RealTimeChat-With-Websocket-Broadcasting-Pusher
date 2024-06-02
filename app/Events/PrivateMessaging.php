@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class PublicMessaging implements ShouldBroadcast
+class PrivateMessaging implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $data;
@@ -20,7 +20,6 @@ class PublicMessaging implements ShouldBroadcast
     public function __construct($data)
     {
         $this->data = $data;
-        // dd($data);
     }
 
     /**
@@ -28,12 +27,14 @@ class PublicMessaging implements ShouldBroadcast
      *
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
+    // public function broadcastOn(): array
+    // {
+    //     return [
+    //         new PrivateChannel('private-messaging'),
+    //     ];
+    // }
     public function broadcastOn()
     {
-        return new Channel('messaging');
+        return new PrivateChannel('messaging');
     }
-    // public function broadcastAs()
-    // {
-    //     return 'PublicMessaging';
-    // }
 }

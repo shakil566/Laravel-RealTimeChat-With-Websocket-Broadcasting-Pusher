@@ -27,8 +27,18 @@
             width: fit-content;
         }
 
-        .button {
+        .channel-header-div {
+            margin: 0px auto;
+            text-align: center;
+            width: fit-content;
+        }
+
+        .channel-header-div a.button.active {
             background-color: #04AA6D;
+        }
+
+        .button {
+            background-color: #229ca9;
             /* Green */
             border: none;
             color: white;
@@ -41,6 +51,10 @@
 
         .margin-top-20 {
             margin-top: 20px
+        }
+
+        .margin-bottom-20 {
+            margin-bottom: 20px
         }
     </style>
 
@@ -95,7 +109,6 @@
                                 </li>
                             @endif
                         @else
-
                             <li class="nav-item dropdown">
 
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"

@@ -10,8 +10,8 @@
         <div class="col-md-8">
 
             <div class="margin-top-20 margin-bottom-20 channel-header-div">
-                <a href="{{ url('/public-messaging') }}" class="button active">Public Chat</a>
-                <a href="{{ url('/private-messaging') }}" class="button">Private Chat</a>
+                <a href="{{ url('/public-messaging') }}" class="button">Public Chat</a>
+                <a href="{{ url('/private-messaging') }}" class="button active">Private Chat</a>
                 <a href="{{ url('/private-messaging') }}" class="button">Group Chat</a>
             </div>
 
@@ -21,7 +21,7 @@
                 <div class="card-body">
                     <div class="send-message-div">
 
-                        <h1 class="margin-bottom-20">Public Channel for Message Send</h1>
+                        <h1 class="margin-bottom-20">Private Channel for Messaging</h1>
                         <form action="" id="form" method="POST">
                             @csrf
                                 <label for="message">Message:</label>
@@ -46,13 +46,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> --}}
 
 <script type="text/javascript">
-    Echo.channel(`messaging`)
-        .listen('PublicMessaging', (e) => {
-            // toastr.info("You have new public message!")
+    Echo.private(`messaging`)
+        .listen('PrivateMessaging', (e) => {
+            // toastr.info("You have new private message!")
             // toastr.options.timeOut = 60; // How long the toast will display without user interaction
             // toastr.options.extendedTimeOut = 60; // How long the toast will display after a user hovers over it
             $(".messaging").append("<strong>" + e.data + "</strong><br>");
-            // console.log(e);
+            console.log(e);
         });
 
 
@@ -63,7 +63,7 @@
         let data = new FormData(form);
 
         $.ajax({
-            url: "{{ URL::to('/public-message-send') }}",
+            url: "{{ URL::to('/private-message-send') }}",
             type: "POST",
             data: data,
             dataType: "JSON",

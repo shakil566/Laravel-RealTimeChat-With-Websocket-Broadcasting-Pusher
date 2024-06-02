@@ -1,6 +1,5 @@
 <?php
 
-use App\Events\PublicMessaging;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,20 +11,11 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider and all of them will
 | be assigned to the "web" middleware group. Make something great!
 |
-*/
+ */
 
 Route::get('/', function () {
     return view('welcome');
 });
-
-// Route::get('/public-messaging', function() {
-//     return view('public_messaging.index');
-// });
-
-// Route::post('/send-message', function() {
-//     // event(new PublicMessaging('hi'));
-//     dd('Done');
-// });
 
 Auth::routes();
 
@@ -33,3 +23,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::get('/public-messaging', [App\Http\Controllers\MessagingController::class, 'index']);
 Route::post('/public-message-send', [App\Http\Controllers\MessagingController::class, 'publicMessageSend']);
+
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/private-messaging', [App\Http\Controllers\MessagingController::class, 'privateIndex']);
+    Route::post('/private-message-send', [App\Http\Controllers\MessagingController::class, 'privateMessageSend']);
+});

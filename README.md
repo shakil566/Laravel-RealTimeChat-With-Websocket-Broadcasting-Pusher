@@ -13,13 +13,14 @@
 - For clone this project run this command: 
 - Then rename .env.example file to .env file and add database name
 
-- Pusher install in laravel project:composer require pusher/pusher-php-server "~3.0"
-
 - Then run these command: 
 - composer update
 - php artisan optimize:clear (optional)
-- php artisan serve
+
+- php artisan serve(must for private channel and browse from http://127.0.0.1:8000/)
 - websocket server start: php artisan websockets:serve
+
+- Websocket dashboard localhost:8000/laravel-websockets
 
 
 
@@ -101,7 +102,7 @@ window.Echo = new Echo({
 - npm run build
 - npm run dev
 - php artisan optimize:clear (optional)
-- php artisan serve
+- php artisan serve(must for private channel and browse from http://127.0.0.1:8000/)
 - websocket server start: php artisan websockets:serve
 
 - Websocket dashboard localhost:8000/laravel-websockets

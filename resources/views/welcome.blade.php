@@ -15,8 +15,8 @@
                         <h1>Lets Fun</h1>
                         <div class="margin-top-20">
                             <a href="{{ url('/public-messaging') }}" class="button">Public Chat</a>
-                            <a href="{{ url('/public-messaging') }}" class="button">Private Chat</a>
-                            <a href="{{ url('/public-messaging') }}" class="button">Group Chat</a>
+                            <a href="{{ url('/private-messaging') }}" class="button">Private Chat</a>
+                            <a href="{{ url('/private-messaging') }}" class="button">Group Chat</a>
                         </div>
                     </div>
                 </div>
