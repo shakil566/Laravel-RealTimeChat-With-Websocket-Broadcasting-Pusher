@@ -7,7 +7,7 @@
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10">
 
             <div class="margin-top-20 margin-bottom-20 channel-header-div">
                 <a href="{{ url('/public-messaging') }}" class="button">Public Chat</a>
@@ -16,24 +16,41 @@
             </div>
 
             <div class="card">
-                {{-- <div class="card-header">{{ __('Dashboard') }}</div> --}}
+                <!-- {{-- <div class="card-header">{{ __('Dashboard') }}</div> --}} -->
 
                 <div class="card-body">
                     <div class="send-message-div">
-
                         <h1 class="margin-bottom-20">Private Channel for Messaging</h1>
-                        <form action="" id="form" method="POST">
-                            @csrf
-                                <label for="message">Message:</label>
-                                <input type="text" required placeholder="Tell me something please....!" name="message">
-                                <br><br>
-                                <input type="button" class="send-message" value="Send">
-                        </form>
+                        <div class="row">
+                            <div class="col">
+                                @if(!empty($userArr))
+                                <ul class="list-group">
+                                    @foreach($userArr as $user)
+                                    <li class="list-group-item list-group-item-dark">
+                                        {{$user->name}} <b><sup id="{{$user->id}}-status" class="offline">Offline</sup></b>
 
-                        <br><br>
-                        <div class="messaging">
+                                    </li>
+                                    @endforeach
+                                </ul>
+                                @endif
+                            </div>
+                            <div class="col">
+                                <div class="msg-all-div">
+                                    <div class="messaging">
+    
+                                    </div>
+                                    <div class="smd-send-div">
+                                        <form action="" id="form" method="POST">
+                                            @csrf
+                                            <input type="text" required placeholder="Tell me something please...!" name="message">
+                                            <input type="button" class="send-message" value="Send">
+                                        </form>
 
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -54,6 +71,32 @@
             $(".messaging").append("<strong>" + e.data + "</strong><br>");
             console.log(e);
         });
+
+    
+        Echo.join('user-status')
+        .here((user) => {
+            for (let i = 0; i < user.length; i++) {
+                    if (senderId != user[i]['id']) {
+                        $("#" + user[i]['id'] + "-status").removeClass("offline");
+                        $("#" + user[i]['id'] + "-status").addClass("online");
+                        $("#" + user[i]['id'] + "-status").text("Online");
+
+                    }
+                }
+        })
+        .joining((user) => {
+            $("#" + user.id + "-status").removeClass("offline");
+            $("#" + user.id + "-status").addClass("online");
+            $("#" + user.id + "-status").text("Online");
+        })
+        .leaving((user) => {
+            $("#" + user.id + "-status").removeClass("online");
+            $("#" + user.id + "-status").addClass("offline");
+            $("#" + user.id + "-status").text("Offline");
+        })
+        .listen('UserStatus', (e) => {
+            // console.log(e);
+        })
 
 
 

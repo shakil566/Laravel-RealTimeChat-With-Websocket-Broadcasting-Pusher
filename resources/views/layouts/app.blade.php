@@ -56,6 +56,25 @@
         .margin-bottom-20 {
             margin-bottom: 20px
         }
+        .offline{
+            color: red;
+        }
+        .online{
+            color: green;
+        }
+        .msg-all-div {
+            background: #dedede;
+            border-radius: 10px;
+            padding: 10px;
+            height: 225px;
+            width: 400px;
+            overflow:auto;
+            overflow-x:hidden;
+        }
+        .smd-send-div {
+    position: absolute;
+    bottom: 0px;
+}
     </style>
 
 
@@ -70,6 +89,11 @@
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <script>
         {!! Vite::content('resources/js/app.js') !!}
+    </script>
+    <script>
+        var senderId = @json(auth()->user()->id ?? null);
+        var receiverId;
+
     </script>
 
 </head>
