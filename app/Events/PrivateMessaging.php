@@ -13,13 +13,13 @@ use Illuminate\Queue\SerializesModels;
 class PrivateMessaging implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $data;
+    public $messageData;
     /**
      * Create a new event instance.
      */
-    public function __construct($data)
+    public function __construct($messageData)
     {
-        $this->data = $data;
+        $this->messageData = $messageData;
     }
 
     /**
@@ -33,6 +33,11 @@ class PrivateMessaging implements ShouldBroadcast
     //         new PrivateChannel('private-messaging'),
     //     ];
     // }
+    public function broadcastWith()
+    {
+        return ['messageData' => $this->messageData];
+    }
+    
     public function broadcastOn()
     {
         return new PrivateChannel('messaging');

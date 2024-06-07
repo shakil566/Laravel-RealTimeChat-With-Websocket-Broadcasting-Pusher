@@ -22,7 +22,7 @@ Broadcast::channel('user-status', function ($user) {
     return $user;
 });
 
-// all logged in user get message
+// logged in user get message
 Broadcast::channel('messaging', function ($user) {
     return !is_null($user);
 });

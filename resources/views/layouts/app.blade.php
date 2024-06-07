@@ -36,7 +36,13 @@
         .channel-header-div a.button.active {
             background-color: #04AA6D;
         }
-
+        a.user {
+            color: #000000 !important;
+            font-weight: bold;
+        }
+        .user-list.active {
+            background-color: #04AA6D !important;
+        }
         .button {
             background-color: #229ca9;
             /* Green */
@@ -72,9 +78,31 @@
             overflow-x:hidden;
         }
         .smd-send-div {
-    position: absolute;
-    bottom: 0px;
-}
+            position: absolute;
+            bottom: 0px;
+        }
+        a {
+            text-decoration: none !important;
+        }
+        .display-none {
+            display: none !important;
+        }
+        .message-right {
+            text-align: right !important;
+            font-weight: bold;
+            font-size: 18px;
+            line-height: normal;
+        }
+        .message-left {
+            text-align: left !important;
+            font-weight: bold;
+            font-size: 18px;
+            line-height: normal;
+        }
+        .msg-time {
+            font-size: 10px;
+            font-weight: normal;
+        }
     </style>
 
 

@@ -26,8 +26,8 @@
                                 @if(!empty($userArr))
                                 <ul class="list-group">
                                     @foreach($userArr as $user)
-                                    <li class="list-group-item list-group-item-dark">
-                                        {{$user->name}} <b><sup id="{{$user->id}}-status" class="offline">Offline</sup></b>
+                                    <li class="list-group-item list-group-item-dark user-list act-{{ $user->id }}">
+                                        <a href="#" class="user" data-id="{{ $user->id }}">{{$user->name}} <b><sup id="{{$user->id}}-status" class="offline">Offline</sup></b></a>
 
                                     </li>
                                     @endforeach
@@ -35,14 +35,20 @@
                                 @endif
                             </div>
                             <div class="col">
+                                <div class="message-intro">
+                                    <span>
+                                        Lets messaging?
+                                    </span>
+                                </div>
                                 <div class="msg-all-div">
                                     <div class="messaging">
-    
+
                                     </div>
                                     <div class="smd-send-div">
                                         <form action="" id="form" method="POST">
                                             @csrf
-                                            <input type="text" required placeholder="Tell me something please...!" name="message">
+                                            <input type="hidden" name="receiver_id" class="receiver">
+                                            <input type="text" class="message" required placeholder="Tell me something please...!" name="message">
                                             <input type="button" class="send-message" value="Send">
                                         </form>
 
@@ -59,30 +65,33 @@
 </div>
 
 
-{{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> --}}
+<!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> -->
 
 <script type="text/javascript">
     Echo.private(`messaging`)
-        .listen('PrivateMessaging', (e) => {
-            // toastr.info("You have new private message!")
-            // toastr.options.timeOut = 60; // How long the toast will display without user interaction
-            // toastr.options.extendedTimeOut = 60; // How long the toast will display after a user hovers over it
-            $(".messaging").append("<strong>" + e.data + "</strong><br>");
-            console.log(e);
+        .listen('PrivateMessaging', (data) => {
+
+            if (senderId == data.messageData.receiver_id && receiverId == data.messageData.sender_id) {
+
+                let message = data.messageData.message;
+                let messageTime = new Date(data.messageData.created_at);
+                $(".messaging").append("<div class='message-left'><span class='msg'>" + data.messageData.message + "</span><br><span class='msg-time'>" + messageTime.toLocaleString() + "</span></div>");
+
+            }
         });
 
-    
-        Echo.join('user-status')
+
+    Echo.join('user-status')
         .here((user) => {
             for (let i = 0; i < user.length; i++) {
-                    if (senderId != user[i]['id']) {
-                        $("#" + user[i]['id'] + "-status").removeClass("offline");
-                        $("#" + user[i]['id'] + "-status").addClass("online");
-                        $("#" + user[i]['id'] + "-status").text("Online");
+                if (senderId != user[i]['id']) {
+                    $("#" + user[i]['id'] + "-status").removeClass("offline");
+                    $("#" + user[i]['id'] + "-status").addClass("online");
+                    $("#" + user[i]['id'] + "-status").text("Online");
 
-                    }
                 }
+            }
         })
         .joining((user) => {
             $("#" + user.id + "-status").removeClass("offline");
@@ -100,7 +109,8 @@
 
 
 
-    $(".send-message").click(function(e) {
+    
+        $(".send-message").click(function(e) {
         e.preventDefault();
         let form = $('#form')[0];
         let data = new FormData(form);
@@ -113,8 +123,12 @@
             processData: false,
             contentType: false,
 
-            success: function(response) {
+            beforeSend: function() {
+                $(".send-message").hide();
+            },
 
+            success: function(response) {
+                $(".send-message").show();
                 if (response.errors) {
                     var errorMsg = '';
                     $.each(response.errors, function(field, errors) {
@@ -128,6 +142,80 @@
                     // });
 
                 } else {
+                    let message = response.data.message;
+                    let messageTime = new Date(response.data.created_at);
+                    
+                    $(".messaging").append("<div class='message-right'><span class='msg'>" + message + "</span><br><span class='msg-time'>" + messageTime.toLocaleString() + "</span></div>");
+                    // $(".messaging").append("<div class='messag-right'>" + message + "<span class='msg-time'>" + messageTime + "</span></div>");
+                    $(".message").val('');
+                    // toastr.success({
+                    //     message: response.success,
+                    //     position: 'topRight'
+
+                    // });
+                }
+
+            },
+            error: function(xhr, status, error) {
+
+                // toastr.error({
+                //     message: 'An error occurred: ' + error,
+                //     position: 'topRight'
+                // });
+            }
+
+        });
+
+    })
+
+    $(".msg-all-div").hide();
+
+    $(".user").click(function(e) {
+        e.preventDefault();
+
+        let receiver_id = $(this).data('id');
+        receiverId = receiver_id;
+        $(".receiver").val(receiver_id);
+        $(".message").val('');
+        $(".messaging").html('');
+        $(".message-intro").hide();
+        $(".msg-all-div").show();
+        $(".user-list").removeClass("active");
+        $(".act-" + receiver_id).addClass("active");
+
+        $.ajax({
+            url: "{{ URL::to('/message-body') }}",
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                user_id: receiver_id
+            },
+            cache: false,
+            dataType: "JSON",
+            processData: false,
+            contentType: false,
+
+            beforeSend: function() {
+            },
+
+            success: function(response) {
+                if (response.errors) {
+                    var errorMsg = '';
+                    $.each(response.errors, function(field, errors) {
+                        $.each(errors, function(index, error) {
+                            errorMsg += error + '<br>';
+                        });
+                    });
+                    // toastr.error({
+                    //     message: errorMsg,
+                    //     position: 'topRight'
+                    // });
+
+                } else {
+
+                    $(".message").val('');
                     // toastr.success({
                     //     message: response.success,
                     //     position: 'topRight'

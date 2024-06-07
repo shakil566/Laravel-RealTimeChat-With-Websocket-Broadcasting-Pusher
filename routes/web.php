@@ -27,4 +27,5 @@ Route::post('/public-message-send', [App\Http\Controllers\MessagingController::c
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/private-messaging', [App\Http\Controllers\MessagingController::class, 'privateIndex']);
     Route::post('/private-message-send', [App\Http\Controllers\MessagingController::class, 'privateMessageSend']);
+    Route::post('/message-body', [App\Http\Controllers\MessagingController::class, 'messageBody']);
 });
