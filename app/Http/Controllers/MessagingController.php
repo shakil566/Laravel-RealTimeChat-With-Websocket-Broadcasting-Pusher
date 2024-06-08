@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+
 class MessagingController extends Controller
 {
     public function index(Request $request)
@@ -17,8 +18,15 @@ class MessagingController extends Controller
     }
     public function publicMessageSend(Request $request)
     {
-        event(new PublicMessaging($request->message ?? ''));
-        // dd($request);
+        try {
+            event(new PublicMessaging($request->message ?? ''));
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+
+
     }
 
     public function privateIndex(Request $request)
@@ -32,32 +40,34 @@ class MessagingController extends Controller
             $messageData = Message::create([
                 'sender_id' => Auth::user()->id,
                 'receiver_id' => $request->receiver_id,
-                'message' => $request->message
+                'message' => $request->message,
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s")
             ]);
 
             event(new PrivateMessaging($messageData));
-            
+
             return response()->json(['success' => true, 'data' => $messageData]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
 
-
-        return response()->json(['message' => 'Message Sent!'], 200);
     }
     public function messageBody(Request $request)
     {
-        // dd($request->all());
         try {
-            $receiverName = User::where('id', $request->receiver_id)->select('name')->first();
-            $messageInfo = Message::where('receiver_id', $request->receiver_id)->where('sender_id', Auth::user()->id)->get();
-            // dd($receiverName, $messageInfo);
-            return response()->json(['success' => true, 'receiver' => $receiverName, 'data' => $messageInfo]);
+            $receiverInfo = User::where('id', $request->receiver_id)->select('id', 'name')->first();
+            $messageInfo = Message::where('receiver_id', $request->receiver_id)
+                ->where('sender_id', Auth::user()->id)
+                ->orWhere('receiver_id', Auth::user()->id)
+                ->orWhere('sender_id', $request->receiver_id)
+                ->get();
+            // dd($receiverName->name, $messageInfo);
+
+            $view = view('private_messaging.prev_messages', compact('messageInfo', 'receiverInfo'))->render();
+            return response()->json(['success' => true, 'html' => $view]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
-
-
-        return response()->json(['message' => 'Message Sent!'], 200);
     }
 }

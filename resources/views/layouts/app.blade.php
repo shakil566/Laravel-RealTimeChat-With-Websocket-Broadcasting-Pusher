@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'MessagingSoftware') }}</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
@@ -73,7 +73,7 @@
             border-radius: 10px;
             padding: 10px;
             height: 225px;
-            width: 400px;
+            width: -webkit-fill-available;
             overflow:auto;
             overflow-x:hidden;
         }
@@ -103,6 +103,18 @@
             font-size: 10px;
             font-weight: normal;
         }
+        .right-side {
+            width: 65% !important;
+        }
+        .left-side {
+            width: 35% !important;
+        }
+        button.send-message {
+            border-radius: 5px;
+            background: #3b73be;
+            border-color: #3b73be;
+            color: #fff;
+        }
     </style>
 
 
@@ -131,7 +143,7 @@
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
+                    {{ config('app.name', 'MessagingSoftware') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"

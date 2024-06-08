@@ -7,12 +7,11 @@
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-10">
+        <div class="col">
 
             <div class="margin-top-20 margin-bottom-20 channel-header-div">
                 <a href="{{ url('/public-messaging') }}" class="button">Public Chat</a>
                 <a href="{{ url('/private-messaging') }}" class="button active">Private Chat</a>
-                <a href="{{ url('/private-messaging') }}" class="button">Group Chat</a>
             </div>
 
             <div class="card">
@@ -22,7 +21,7 @@
                     <div class="send-message-div">
                         <h1 class="margin-bottom-20">Private Channel for Messaging</h1>
                         <div class="row">
-                            <div class="col">
+                            <div class="left-side">
                                 @if(!empty($userArr))
                                 <ul class="list-group">
                                     @foreach($userArr as $user)
@@ -34,7 +33,7 @@
                                 </ul>
                                 @endif
                             </div>
-                            <div class="col">
+                            <div class="right-side">
                                 <div class="message-intro">
                                     <span>
                                         Lets messaging?
@@ -42,14 +41,14 @@
                                 </div>
                                 <div class="msg-all-div">
                                     <div class="messaging">
-
+                                        
                                     </div>
                                     <div class="smd-send-div">
                                         <form action="" id="form" method="POST">
                                             @csrf
                                             <input type="hidden" name="receiver_id" class="receiver">
                                             <input type="text" class="message" required placeholder="Tell me something please...!" name="message">
-                                            <input type="button" class="send-message" value="Send">
+                                            <button type="submit" class="send-message">Send</button>
                                         </form>
 
                                     </div>
@@ -109,8 +108,8 @@
 
 
 
-    
-        $(".send-message").click(function(e) {
+
+    $(".send-message").click(function(e) {
         e.preventDefault();
         let form = $('#form')[0];
         let data = new FormData(form);
@@ -144,9 +143,8 @@
                 } else {
                     let message = response.data.message;
                     let messageTime = new Date(response.data.created_at);
-                    
+
                     $(".messaging").append("<div class='message-right'><span class='msg'>" + message + "</span><br><span class='msg-time'>" + messageTime.toLocaleString() + "</span></div>");
-                    // $(".messaging").append("<div class='messag-right'>" + message + "<span class='msg-time'>" + messageTime + "</span></div>");
                     $(".message").val('');
                     // toastr.success({
                     //     message: response.success,
@@ -190,16 +188,11 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             data: {
-                user_id: receiver_id
+                receiver_id: receiver_id
             },
             cache: false,
             dataType: "JSON",
-            processData: false,
-            contentType: false,
-
-            beforeSend: function() {
-            },
-
+            beforeSend: function() {},
             success: function(response) {
                 if (response.errors) {
                     var errorMsg = '';
@@ -212,28 +205,28 @@
                     //     message: errorMsg,
                     //     position: 'topRight'
                     // });
-
                 } else {
-
                     $(".message").val('');
+
+                    if (response.html) {
+                        $(".messaging").html(response.html);
+                    } else {
+                        // Handle any errors or no data scenario
+                        $(".messaging").html('');
+                    }
                     // toastr.success({
                     //     message: response.success,
                     //     position: 'topRight'
-
                     // });
                 }
-
             },
             error: function(xhr, status, error) {
-
                 // toastr.error({
                 //     message: 'An error occurred: ' + error,
                 //     position: 'topRight'
                 // });
             }
-
         });
-
     })
 </script>
 @endsection

@@ -12,7 +12,6 @@
             <div class="margin-top-20 margin-bottom-20 channel-header-div">
                 <a href="{{ url('/public-messaging') }}" class="button active">Public Chat</a>
                 <a href="{{ url('/private-messaging') }}" class="button">Private Chat</a>
-                <a href="{{ url('/private-messaging') }}" class="button">Group Chat</a>
             </div>
 
             <div class="card">
@@ -25,9 +24,10 @@
                         <form action="" id="form" method="POST">
                             @csrf
                                 <label for="message">Message:</label>
-                                <input type="text" required placeholder="Tell me something please....!" name="message">
+                                <input type="text"  class="message" required placeholder="Tell me something please....!" name="message">
                                 <br><br>
-                                <input type="button" class="send-message" value="Send">
+                                <!-- <input type="button" class="send-message" value="Send"> -->
+                                <button type="submit" class="send-message" required placeholder="Tell me something please...!" >Send</button>
                         </form>
 
                         <br><br>
@@ -69,8 +69,13 @@
             dataType: "JSON",
             processData: false,
             contentType: false,
+            beforeSend: function() {
+                $(".send-message").hide();
+            },
 
             success: function(response) {
+
+                $(".send-message").show();
 
                 if (response.errors) {
                     var errorMsg = '';
@@ -85,6 +90,7 @@
                     // });
 
                 } else {
+                    $(".message").val('');
                     // toastr.success({
                     //     message: response.success,
                     //     position: 'topRight'
